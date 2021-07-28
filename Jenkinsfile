@@ -23,7 +23,7 @@ pipeline {
     stages {
         stage('git checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/shivamsahni/FinalDevOps4Dotnet.git
+                git branch: 'main', url: 'https://github.com/shivamsahni/FinalDevOps4Dotnet.git'
             }
         }        
         stage('restore') {
