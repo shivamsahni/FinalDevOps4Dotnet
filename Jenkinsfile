@@ -48,7 +48,7 @@ pipeline {
         stage('Automated Unit Testing') {
             steps {
                 echo 'Run Unit Tests'
-                bat 'dotnet test BasicMathTests\\BasicMathTests.csproj -l:trx;LogFileName=BasicMathTestResults.xml'
+                bat 'dotnet test SampleDotnetWebAppTests\\SampleDotnetWebAppTests.csproj -l:trx;LogFileName=BasicMathTestResults.xml'
             }
         }
         stage('Create Docker Image'){
