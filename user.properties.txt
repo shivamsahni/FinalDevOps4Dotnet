@@ -1,0 +1,4 @@
+user.name=shivam
+user.employeeid=3149946
+user.emailid=shivam01@nagarro.com
+user.type=dotnet
