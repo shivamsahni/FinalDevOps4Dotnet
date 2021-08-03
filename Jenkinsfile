@@ -100,14 +100,14 @@ pipeline {
                         }
                     }                    
                 }        
-            }
-            stage('Docker Deployment'){
-                steps{
-                    echo "Docker Deployment by using docker hub's image"
-                    bat "docker run --name c-${userid}-master ${registry}:${BUILD_NUMBER}"
-                }
-            }            
+            }           
         }
+        stage('Docker Deployment'){
+            steps{
+                echo "Docker Deployment by using docker hub's image"
+                bat "docker run --name c-${userid}-master ${registry}:${BUILD_NUMBER}"
+            }
+        } 
     }
     post{
         always{
