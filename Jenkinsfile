@@ -8,6 +8,7 @@ pipeline {
         docker_port = null
         username = 'shivamsahni'
         userid = 'shivam01'
+        containerID = null
     }
     
     options {
@@ -77,13 +78,15 @@ pipeline {
         stage('Containers'){
                 parallel{
                     stage('Run PreContainer Checks'){
-                        environment{
-                            def scriptToCheckContainer = '''docker ps -q -f name=c-shivam01-master'''
-                            containerID=bat(script: scriptToCheckContainer, returnStdout: true).trim()
+                        steps{
+                            script{
+                                def scriptToCheckContainer = '''docker ps -q -f name=c-shivam01-master'''
+                                env.containerID=bat(script: scriptToCheckContainer, returnStdout: true).trim()                            
+                            }
                         }
                         when{
                             expression{
-                                return containerID!=null
+                                return env.containerID!=null
                             }
                         }
                         steps{
