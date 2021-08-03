@@ -92,7 +92,7 @@ pipeline {
                                 echo "Stop container and remove from stopped container list too"
                                 bat "docker stop env.containerID && docker rm env.containerID"
                             }
-                        }
+                        },
                         "Publish Docker Image to DockerHub":{
                             steps{
                                 echo "Move Image to a Docker Hub"
