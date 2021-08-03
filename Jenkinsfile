@@ -89,7 +89,8 @@ pipeline {
                         }
                         steps{
                             echo "Stop container and remove from stopped container list too"
-                            bat "docker stop env.containerID && docker rm env.containerID"
+                            echo env.containerID
+                            bat "docker stop ${env.containerID} && docker rm ${env.containerID}"
                         }
                     }
                     stage('Publish Docker Image to DockerHub'){
