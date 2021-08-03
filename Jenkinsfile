@@ -80,8 +80,7 @@ pipeline {
                 parallel(
                     "Run PreContainer Checks":{
                         environment{
-                            def scriptToCheckContainer = '''docker ps -q -f name=c-shivam01-master'''
-                            containerID="${bat(script: scriptToCheckContainer, returnStdout: true).trim()}"
+                            containerID="${bat(script: 'docker ps -q -f name=c-shivam01-master', returnStdout: true).trim()}"
                         }
                         when{
                             expression{
