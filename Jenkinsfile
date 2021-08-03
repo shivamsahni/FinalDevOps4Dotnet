@@ -76,32 +76,34 @@ pipeline {
             }
         }
         stage('Containers'){
-                parallel{
-                    stage('Run PreContainer Checks'){
-                        environment{
-                            def scriptToCheckContainer = '''docker ps -q -f name=c-shivam01-master'''
-                            containerID=bat(script: scriptToCheckContainer, returnStdout: true).trim()
-                        }
-                        when{
-                            expression{
-                                return containerID!=null
+                steps{
+                    parallel(
+                        "Run PreContainer Checks":{
+                            environment{
+                                def scriptToCheckContainer = '''docker ps -q -f name=c-shivam01-master'''
+                                containerID="${bat(script: scriptToCheckContainer, returnStdout: true).trim()}"
+                            }
+                            when{
+                                expression{
+                                    return containerID!=null
+                                }
+                            }
+                            steps{
+                                echo "Stop container and remove from stopped container list too"
+                                bat "docker stop env.containerID && docker rm env.containerID"
                             }
                         }
-                        steps{
-                            echo "Stop container and remove from stopped container list too"
-                            echo env.containerID
-                            bat "docker stop ${env.containerID} && docker rm ${env.containerID}"
-                        }
-                    }
-                    stage('Publish Docker Image to DockerHub'){
-                        steps{
-                            echo "Move Image to a Docker Hub"
-                            bat "docker tag i-${userid}-master ${registry}:${BUILD_NUMBER}"
-                            withDockerRegistry([credentialsId: 'DockerHub', url: ""]){
-                                bat "docker push ${registry}:${BUILD_NUMBER}"                    
-                        }
-                    }                    
-                }        
+                        "Publish Docker Image to DockerHub":{
+                            steps{
+                                echo "Move Image to a Docker Hub"
+                                bat "docker tag i-${userid}-master ${registry}:${BUILD_NUMBER}"
+                                withDockerRegistry([credentialsId: 'DockerHub', url: ""]){
+                                    bat "docker push ${registry}:${BUILD_NUMBER}"                    
+                            }
+                        }                    
+                    })
+                }
+        
             }
         }
         stage('Docker Deployment'){
