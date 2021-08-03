@@ -78,20 +78,18 @@ pipeline {
         stage('Containers'){
                 parallel{
                     stage('Run PreContainer Checks'){
-                        steps{
-                            script{
-                                def scriptToCheckContainer = '''docker ps -q -f name=c-shivam01-master'''
-                                env.containerID=bat(script: scriptToCheckContainer, returnStdout: true).trim()                            
-                            }
+                        environment{
+                            def scriptToCheckContainer = '''docker ps -q -f name=c-shivam01-master'''
+                            containerID=bat(script: scriptToCheckContainer, returnStdout: true).trim()
                         }
                         when{
                             expression{
-                                return env.containerID!=null
+                                return containerID!=null
                             }
                         }
                         steps{
                             echo "Stop container and remove from stopped container list too"
-                            bat "docker stop ${env.containerID} && docker rm ${env.containerID}"
+                            bat "docker stop env.containerID && docker rm env.containerID"
                         }
                     }
                     stage('Publish Docker Image to DockerHub'){
@@ -103,7 +101,7 @@ pipeline {
                         }
                     }                    
                 }        
-            }           
+            }
         }
         stage('Docker Deployment'){
             steps{
