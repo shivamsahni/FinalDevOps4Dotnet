@@ -81,9 +81,12 @@ pipeline {
         stage('Containers'){
             parallel{
                 stage("Run PreContainer Checks"){
-                    script{
+                    steps{
+                        echo "Run PreContainer Checks"
                         echo env.containerName
                         env.containerID="${bat(script: 'docker ps -q -f name=c-shivam01-master', returnStdout: true).trim()}"
+                        echo "Running containerID is "
+                        echo env.containerID
                     }
                     when{
                         expression{
