@@ -89,7 +89,7 @@ pipeline {
                             echo "Running containerID is "
                             echo env.containerID
 
-                            if(env.containerID!=null){
+                            if(env.containerID){
                                 echo "Stop container and remove from stopped container list too"
                                 bat "docker stop env.containerID && docker rm env.containerID"
                             }                         
