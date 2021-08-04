@@ -78,40 +78,34 @@ pipeline {
                 bat "docker build -t ${imageName}:${BUILD_NUMBER} --no-cache -f . ."
             }
         }
-        stages{
-            stage('Containers'){
-                steps{
-                    parallel{
-                        echo "Container"
-                        stage("Run PreContainer Checks"){
-                            script{
-                                echo env.containerName
-                                env.containerID="${bat(script: 'docker ps -q -f name=c-shivam01-master', returnStdout: true).trim()}"
-                            }
-                            when{
-                                expression{
-                                    return env.containerID!=null
-                                }
-                            }
-                            steps{
-                                echo "Stop container and remove from stopped container list too"
-                                bat "docker stop env.containerID && docker rm env.containerID"
-                            }
-                        }
-                        stage("Publish Docker Image to DockerHub"){
-                            steps{
-                                echo "Move Image to a Docker Hub"
-                                bat "docker tag ${imageName} ${registry}:${BUILD_NUMBER}"
-                                withDockerRegistry([credentialsId: 'DockerHub', url: ""]){
-                                    bat "docker push ${registry}:${BUILD_NUMBER}"                    
-                                }
-                            }                    
+        stage('Containers'){
+            parallel{
+                stage("Run PreContainer Checks"){
+                    script{
+                        echo env.containerName
+                        env.containerID="${bat(script: 'docker ps -q -f name=c-shivam01-master', returnStdout: true).trim()}"
+                    }
+                    when{
+                        expression{
+                            return env.containerID!=null
                         }
                     }
+                    steps{
+                        echo "Stop container and remove from stopped container list too"
+                        bat "docker stop env.containerID && docker rm env.containerID"
+                    }
                 }
-            }        
-        }
-
+                stage("Publish Docker Image to DockerHub"){
+                    steps{
+                        echo "Move Image to a Docker Hub"
+                        bat "docker tag ${imageName} ${registry}:${BUILD_NUMBER}"
+                        withDockerRegistry([credentialsId: 'DockerHub', url: ""]){
+                            bat "docker push ${registry}:${BUILD_NUMBER}"                    
+                        }
+                    }                    
+                }
+            }    
+        }        
         stage('Docker Deployment'){
             steps{
                 echo "Docker Deployment by using docker hub's image"
