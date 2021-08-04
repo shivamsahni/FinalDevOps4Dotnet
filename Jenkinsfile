@@ -8,7 +8,8 @@ pipeline {
         docker_port = null
         username = 'shivamsahni'
         userid = 'shivam01'
-        containerID = null
+        containerName = 'c-shivam01-master'
+        imageName = 'i-shivam01-master'
     }
     
     options {
@@ -72,13 +73,16 @@ pipeline {
             steps{
                 echo "Docker Image creation step"
                 bat "dotnet publish -c Release"
-                bat "docker build -t i-${userid}-master --no-cache -f . ."
+                bat "docker build -t ${imageName}:${BUILD_NUMBER} --no-cache -f . ."
             }
         }
         stage('Containers'){
             steps{
                 parallel(
                     "Run PreContainer Checks":{
+                        script{
+                            echo env.containerName
+                        }
                         environment{
                             containerID="${bat(script: 'docker ps -q -f name=c-shivam01-master', returnStdout: true).trim()}"
                         }
@@ -95,7 +99,7 @@ pipeline {
                     "Publish Docker Image to DockerHub":{
                         steps{
                             echo "Move Image to a Docker Hub"
-                            bat "docker tag i-${userid}-master ${registry}:${BUILD_NUMBER}"
+                            bat "docker tag ${imageName} ${registry}:${BUILD_NUMBER}"
                             withDockerRegistry([credentialsId: 'DockerHub', url: ""]){
                                 bat "docker push ${registry}:${BUILD_NUMBER}"                    
                             }
@@ -107,7 +111,7 @@ pipeline {
         stage('Docker Deployment'){
             steps{
                 echo "Docker Deployment by using docker hub's image"
-                bat "docker run --name c-${userid}-master ${registry}:${BUILD_NUMBER}"
+                bat "docker run --name ${containerName} ${registry}:${BUILD_NUMBER}"
             }
         } 
     }
