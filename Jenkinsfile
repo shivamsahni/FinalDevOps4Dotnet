@@ -85,8 +85,8 @@ pipeline {
                         script{
                             echo "Run PreContainer Checks"
                             echo env.containerName
-                            env.containerID="${bat(script: 'docker ps -q -f name=c-shivam01-master', returnStdout: true).trim()}"
-                            echo "Running containerID is "
+                            env.containerID="${bat(script: 'docker ps -a -q -f name=c-shivam01-master', returnStdout: true).trim()}"
+                            echo "containerID is "
                             echo env.containerID
                             
                             if(env.containerID != "null"){
