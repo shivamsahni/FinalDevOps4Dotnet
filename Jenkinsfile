@@ -8,8 +8,10 @@ pipeline {
         docker_port = null
         username = 'shivamsahni'
         userid = 'shivam01'
+        containerID = null
         containerName = 'c-shivam01-master'
         imageName = 'i-shivam01-master'
+        
     }
     
     options {
@@ -82,13 +84,11 @@ pipeline {
                     "Run PreContainer Checks":{
                         script{
                             echo env.containerName
-                        }
-                        environment{
-                            containerID="${bat(script: 'docker ps -q -f name=c-shivam01-master', returnStdout: true).trim()}"
+                            env.containerID="${bat(script: 'docker ps -q -f name=c-shivam01-master', returnStdout: true).trim()}"
                         }
                         when{
                             expression{
-                                return containerID!=null
+                                return env.containerID!=null
                             }
                         }
                         steps{
