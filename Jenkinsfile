@@ -8,7 +8,7 @@ pipeline {
         docker_port = null
         username = 'shivamsahni'
         userid = 'shivam01'
-        containerID = null
+        containerID = ''
         containerName = 'c-shivam01-master'
         imageName = 'i-shivam01-master'
         
@@ -89,7 +89,7 @@ pipeline {
                             echo "Running containerID is "
                             echo env.containerID
 
-                            if(env.containerID){
+                            if(env.containerID != ''){
                                 echo "Stop container and remove from stopped container list too"
                                 bat "docker stop env.containerID && docker rm env.containerID"
                             }                         
