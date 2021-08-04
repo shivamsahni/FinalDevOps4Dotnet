@@ -80,8 +80,8 @@ pipeline {
         }
         stage('Containers'){
             steps{
-                parallel(
-                    "Run PreContainer Checks":{
+                parallel{
+                    stage("Run PreContainer Checks"){
                         script{
                             echo env.containerName
                             env.containerID="${bat(script: 'docker ps -q -f name=c-shivam01-master', returnStdout: true).trim()}"
@@ -95,8 +95,8 @@ pipeline {
                             echo "Stop container and remove from stopped container list too"
                             bat "docker stop env.containerID && docker rm env.containerID"
                         }
-                    },
-                    "Publish Docker Image to DockerHub":{
+                    }
+                    stage("Publish Docker Image to DockerHub"){
                         steps{
                             echo "Move Image to a Docker Hub"
                             bat "docker tag ${imageName} ${registry}:${BUILD_NUMBER}"
@@ -105,7 +105,7 @@ pipeline {
                             }
                         }                    
                     }
-                )
+                }
             }
         }
         stage('Docker Deployment'){
