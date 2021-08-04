@@ -82,12 +82,13 @@ pipeline {
             parallel{
                 stage("Run PreContainer Checks"){
                     steps{
-                        echo "Run PreContainer Checks"
-                        echo env.containerName
-                        env.containerID="${bat(script: 'docker ps -q -f name=c-shivam01-master', returnStdout: true).trim()}"
-                        echo "Running containerID is "
-                        echo env.containerID
                         script{
+                            echo "Run PreContainer Checks"
+                            echo env.containerName
+                            env.containerID="${bat(script: 'docker ps -q -f name=c-shivam01-master', returnStdout: true).trim()}"
+                            echo "Running containerID is "
+                            echo env.containerID
+
                             if(env.containerID!=null){
                                 echo "Stop container and remove from stopped container list too"
                                 bat "docker stop env.containerID && docker rm env.containerID"
