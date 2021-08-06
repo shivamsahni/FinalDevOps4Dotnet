@@ -103,6 +103,11 @@ pipeline {
                         withDockerRegistry([credentialsId: 'DockerHub', url: ""]){
                             bat "docker push ${registry}:${BUILD_NUMBER}"                    
                         }
+                        bat "docker tag ${imageName} ${registry}:latest"
+                        withDockerRegistry([credentialsId: 'DockerHub', url: ""]){
+                            bat "docker push ${registry}:latest"                    
+                        }
+                        
                     }                    
                 }
             }    
