@@ -124,7 +124,7 @@ pipeline {
                 echo "Kubernetes Deployment"
                 step([$class: 'KubernetesEngineBuilder',
                       project_Id: env.project_id,
-                      cluster_Name: env.cluster_name,
+                      clusterName: env.cluster_name,
                       location: env.location,
                       manifestPattern: 'deployment.yaml',
                       credentialsId: env.credentials_id,
