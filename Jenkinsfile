@@ -37,14 +37,14 @@ pipeline {
                 bat 'dotnet restore'
             }
         }
-        stage('SonarQube Start') {
+        /*stage('SonarQube Start') {
             steps {
                 echo 'SonarQube Analysis'
                 withSonarQubeEnv('Test_Sonar'){
                     bat "${sonar}\\SonarScanner.MSBuild.exe begin /k:sonar-shivam01 /n:sonar-shivam01 /v:1.0"
                 }
             }
-        }        
+        } */       
         stage('clean') {
             steps {
                 echo 'Clean before build'
@@ -63,14 +63,14 @@ pipeline {
                 bat 'dotnet test SampleDotnetWebAppTests\\SampleDotnetWebAppTests.csproj -l:trx;LogFileName=BasicMathTestResults.xml'
             }
         }
-        stage('SonarQube Stop') {
+        /*stage('SonarQube Stop') {
             steps {
                 echo 'Stop SonarQube Analysis'
                 withSonarQubeEnv('Test_Sonar'){
                     bat "${sonar}\\SonarScanner.MSBuild.exe end"
                 }
             }
-        }        
+        } */       
         stage('Create Docker Image'){
             steps{
                 echo "Docker Image creation step"
