@@ -49,18 +49,5 @@ spec:
       app: WebAppMaster
 
 
----
 
-apiVersion: v1
-kind: Service
-metadata:
-  name: public-svc
-spec:
-  type: LoadBalancer
-  ports:
-  - port: 80
-    nodePort: 30157
-    targetPort: 30157
-  selector:
-    app: public-app
     
