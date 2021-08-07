@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kubernetes-cluster-shivam01
+  
+---
+
+apiVersion: v1
+kind: Service
+metadata: 
+  name: nodeportservice-master
+  namespace: kubernetes-cluster-shivam01
+  labels: 
+    service: nodeport
+spec:
+  type: NodePort 
+  ports:
+    - port: 7200
+      targetPort: 7200
+      nodePort: 30157
+  selector:
+      app: WebAppMaster
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shivam01-webapp-deployment-m
+  namespace: kubernetes-cluster-shivam01
+  labels:
+    app: WebAppMaster
+spec:
+  template:
+    metadata:
+      name: shivam01-webapp-pod-m
+      namespace: kubernetes-cluster-shivam01
+      labels:
+        app: WebAppMaster
+    spec:
+      containers:
+      - name: shivam01-webapp-container-m
+        image: shivamsahni/basicmath:latest
+        ports:
+          - containerPort: 7200        
+  replicas: 4
+  selector:
+    matchLabels:
+      app: WebAppMaster
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: public-svc
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    nodePort: 30157
+    targetPort: 30157
+  selector:
+    app: public-app
+    
