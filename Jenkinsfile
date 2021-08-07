@@ -11,6 +11,10 @@ pipeline {
         containerID = null
         containerName = 'c-shivam01-master'
         imageName = 'i-shivam01-master'
+        project_id = 'skillful-gizmo-321918'
+        cluster_name = 'shivam01-cluster'
+        location = 'us-central1'
+        credentialsId = 'GKE_Shivam01' 
         
     }
     
@@ -99,15 +103,12 @@ pipeline {
                 stage("Publish Docker Image to DockerHub"){
                     steps{
                         echo "Move Image to a Docker Hub"
+                        bat "docker tag ${imageName} ${registry}:latest"                        
                         bat "docker tag ${imageName} ${registry}:${BUILD_NUMBER}"
                         withDockerRegistry([credentialsId: 'DockerHub', url: ""]){
-                            bat "docker push ${registry}:${BUILD_NUMBER}"                    
-                        }
-                        bat "docker tag ${imageName} ${registry}:latest"
-                        withDockerRegistry([credentialsId: 'DockerHub', url: ""]){
-                            bat "docker push ${registry}:latest"                    
-                        }
-                        
+                            bat "docker push ${registry}:latest"
+                            bat "docker push ${registry}:${BUILD_NUMBER}"
+                        }       
                     }                    
                 }
             }    
@@ -117,7 +118,20 @@ pipeline {
                 echo "Docker Deployment by using docker hub's image"
                 bat "docker run -d -p 7200:80 --name ${containerName} ${registry}:${BUILD_NUMBER}"
             }
-        } 
+        }
+        stage('Kubernetes Deployment'){
+            steps{
+                echo "Kubernetes Deployment"
+                step([$class: 'KubernetesEngineBuilder',
+                      project_Id: env.project_id,
+                      cluster_Name: env.cluster_name,
+                      location: env.location,
+                      manifestPattern: 'deployment.yaml',
+                      credentialsId: env.credentials_id,
+                      verifyDeployments: true
+                      ])
+            }
+        }        
     }
     post{
         always{
