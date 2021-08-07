@@ -8,6 +8,10 @@ pipeline {
         docker_port = null
         username = 'shivamsahni'
         userid = 'shivam01'
+        containerID = null
+        containerName = 'c-shivam01-master'
+        imageName = 'i-shivam01-master'
+        
     }
     
     options {
@@ -33,14 +37,14 @@ pipeline {
                 bat 'dotnet restore'
             }
         }
-        stage('SonarQube Start') {
+        /*stage('SonarQube Start') {
             steps {
                 echo 'SonarQube Analysis'
                 withSonarQubeEnv('Test_Sonar'){
                     bat "${sonar}\\SonarScanner.MSBuild.exe begin /k:sonar-shivam01 /n:sonar-shivam01 /v:1.0"
                 }
             }
-        }        
+        } */       
         stage('clean') {
             steps {
                 echo 'Clean before build'
@@ -59,21 +63,61 @@ pipeline {
                 bat 'dotnet test SampleDotnetWebAppTests\\SampleDotnetWebAppTests.csproj -l:trx;LogFileName=BasicMathTestResults.xml'
             }
         }
-        stage('SonarQube Stop') {
+        /*stage('SonarQube Stop') {
             steps {
                 echo 'Stop SonarQube Analysis'
                 withSonarQubeEnv('Test_Sonar'){
                     bat "${sonar}\\SonarScanner.MSBuild.exe end"
                 }
             }
-        }        
+        } */       
         stage('Create Docker Image'){
             steps{
                 echo "Docker Image creation step"
                 bat "dotnet publish -c Release"
-                bat "docker build -t i-${userid}-master --no-cache -f . ."
+                bat "docker build -t ${imageName}:${BUILD_NUMBER} --no-cache -f . ."
             }
-        }		
+        }
+        stage('Containers'){
+            parallel{
+                stage("Run PreContainer Checks"){
+                    steps{
+                        script{
+                            echo "Run PreContainer Checks"
+                            echo env.containerName
+                            env.containerID="${bat(script: 'docker ps -a -q -f name=c-shivam01-master', returnStdout: true).trim().readLines().drop(1).join(" ")}"
+                            echo "containerID is "
+                            echo env.containerID
+                            
+                            if(env.containerID != "null"){
+                                echo "Stop container and remove from stopped container list too"
+                                bat "docker stop ${env.containerID} && docker rm ${env.containerID}"
+                            }                         
+                        }
+                    }
+                }
+                stage("Publish Docker Image to DockerHub"){
+                    steps{
+                        echo "Move Image to a Docker Hub"
+                        bat "docker tag ${imageName} ${registry}:${BUILD_NUMBER}"
+                        withDockerRegistry([credentialsId: 'DockerHub', url: ""]){
+                            bat "docker push ${registry}:${BUILD_NUMBER}"                    
+                        }
+                        bat "docker tag ${imageName} ${registry}:latest"
+                        withDockerRegistry([credentialsId: 'DockerHub', url: ""]){
+                            bat "docker push ${registry}:latest"                    
+                        }
+                        
+                    }                    
+                }
+            }    
+        }        
+        stage('Docker Deployment'){
+            steps{
+                echo "Docker Deployment by using docker hub's image"
+                bat "docker run -d -p 7200:80 --name ${containerName} ${registry}:${BUILD_NUMBER}"
+            }
+        } 
     }
     post{
         always{
