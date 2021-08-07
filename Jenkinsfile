@@ -11,7 +11,7 @@ pipeline {
         containerID = null
         containerName = 'c-shivam01-master'
         imageName = 'i-shivam01-master'
-        project_id = 'skillful-gizmo-321918'
+        project_id = 'shivamnagp'
         cluster_name = 'shivam01-cluster'
         location = 'us-central1'
         credentialsId = 'GKE_Shivam01' 
