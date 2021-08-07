@@ -127,7 +127,7 @@ pipeline {
                       clusterName: env.cluster_name,
                       location: env.location,
                       manifestPattern: 'deployment.yaml',
-                      credentialsId: env.credentials_id,
+                      credentialsId: env.credentialsId,
                       verifyDeployments: true
                       ])
             }
