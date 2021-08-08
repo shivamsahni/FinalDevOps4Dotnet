@@ -48,7 +48,7 @@ pipeline {
         stage('Create Docker Image'){
             steps{
                 echo "Docker Image creation step"
-                bat "docker build -t ${imageName}:${BUILD_NUMBER} --no-cache -f . ."
+                bat "docker build -t ${imageName}:${BUILD_NUMBER} --no-cache ."
             }
         }
         stage('Containers'){
