@@ -2,18 +2,11 @@ pipeline {
     agent any
     
     environment{
-        sonar = tool name: 'sonar_scanner_dotnet'
         registry = 'shivamsahni/basicmath'
-        properties = null
-        docker_port = null
         username = 'shivamsahni'
         userid = 'shivam01'
-        containerName = 'c-shivam01-master'
-        imageName = 'i-shivam01-master'
-        project_id = 'shivamnagp'
-        cluster_name = 'shivam01-cluster'
-        location = 'us-central1-c'
-        credentialsId = 'GKE_Shivam01'       
+        imageName = 'i-shivam01-develop'
+        containerName = 'c-shivam01-develop'
     }
     
     options {
@@ -29,7 +22,7 @@ pipeline {
     stages {
         stage('git checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/shivamsahni/FinalDevOps4Dotnet.git'
+                git branch: 'develop', url: 'https://github.com/shivamsahni/FinalDevOps4Dotnet.git'
             }
         }        
         stage('restore') {
@@ -38,45 +31,23 @@ pipeline {
                 echo 'Restore nuget Packages'
                 bat 'dotnet restore'
             }
-        }
-        stage('SonarQube Start') {
-            steps {
-                echo 'SonarQube Analysis'
-                withSonarQubeEnv('Test_Sonar'){
-                    bat "${sonar}\\SonarScanner.MSBuild.exe begin /k:sonar-shivam01 /n:sonar-shivam01 /v:1.0"
-                }
-            }
         }       
-        stage('clean') {
+        stage('build') {
             steps {
                 echo 'Clean before build'
                 bat 'dotnet clean'
-            }
-        }        
-        stage('build') {
-            steps {
                 echo 'Build Code'
                 bat 'dotnet build'
             }
         } 
-        stage('Automated Unit Testing') {
-            steps {
-                echo 'Run Unit Tests'
-                bat 'dotnet test SampleDotnetWebAppTests\\SampleDotnetWebAppTests.csproj -l:trx;LogFileName=BasicMathTestResults.xml'
-            }
-        }
-        stage('SonarQube Stop') {
-            steps {
-                echo 'Stop SonarQube Analysis'
-                withSonarQubeEnv('Test_Sonar'){
-                    bat "${sonar}\\SonarScanner.MSBuild.exe end"
-                }
-            }
-        }       
+         stage('Release artifact') {
+          steps {
+                 bat "dotnet publish"
+          }
+        }               
         stage('Create Docker Image'){
             steps{
                 echo "Docker Image creation step"
-                bat "dotnet publish -c Release"
                 bat "docker build -t ${imageName}:${BUILD_NUMBER} --no-cache -f . ."
             }
         }
@@ -84,7 +55,7 @@ pipeline {
             parallel{
                 stage("Run PreContainer Checks"){
                     environment{
-                        containerID = "${bat(script: 'docker ps -a -q -f name="c-shivam01-master"', returnStdout: true).trim().readLines().drop(1).join("")}"
+                        containerID = "${bat(script: 'docker ps -a -q -f name="c-shivam01-develop"', returnStdout: true).trim().readLines().drop(1).join("")}"
                     }
                     steps{
                         script{
@@ -116,7 +87,7 @@ pipeline {
         stage('Docker Deployment'){
             steps{
                 echo "Docker Deployment by using docker hub's image"
-                bat "docker run -d -p 7200:80 --name ${containerName} ${registry}:${BUILD_NUMBER}"
+                bat "docker run -d -p 7300:80 --name ${containerName} ${registry}:${BUILD_NUMBER}"
             }
         }
         stage('Kubernetes Deployment'){
@@ -125,12 +96,5 @@ pipeline {
                 bat "kubectl apply -f deployment.yaml"
             }
         }        
-    }
-    post{
-        always{
-            echo 'Test Report Generation...'
-            xunit([MSTest(deleteOutputFiles: true, failIfNotNew: true, pattern: 'BasicMathTests\\TestResults\\BasicMathTestResults.xml', skipNoTestFiles: true, stopProcessingIfError: true)])
-        }
-        
     }
 }
