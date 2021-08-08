@@ -109,11 +109,11 @@ pipeline {
                 bat "docker run -d -p 7200:80 --name ${containerName} ${registry}:${BUILD_NUMBER}"
             }
         }
-        stage('Kubernetes Deployment'){
+        /*stage('Kubernetes Deployment'){
             steps{
                 echo "Kubernetes Deployment"
                 bat "kubectl apply -f deployment.yaml"
             }
-        }        
+        }*/        
     }
 }
