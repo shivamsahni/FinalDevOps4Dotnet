@@ -5,7 +5,6 @@ pipeline {
         registry = 'shivamsahni/basicmath'
         username = 'shivamsahni'
         userid = 'shivam01'
-        imageName = 'i-shivam01-develop'
         containerName = 'c-shivam01-develop'
     }
     
