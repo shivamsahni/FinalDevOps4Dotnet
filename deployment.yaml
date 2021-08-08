@@ -8,45 +8,45 @@ metadata:
 apiVersion: v1
 kind: Service
 metadata: 
-  name: nodeportservice-master
+  name: nodeportservice-develop
   namespace: kubernetes-cluster-shivam01
   labels: 
     service: nodeport
 spec:
   type: NodePort 
   ports:
-    - port: 7200
-      targetPort: 7200
-      nodePort: 30157
+    - port: 7300
+      targetPort: 7300
+      nodePort: 30158
   selector:
-      app: WebAppMaster
+      app: WebAppDevelop
 
 ---
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: shivam01-webapp-deployment-m
+  name: shivam01-webapp-deployment-d
   namespace: kubernetes-cluster-shivam01
   labels:
-    app: WebAppMaster
+    app: WebAppDevelop
 spec:
   template:
     metadata:
-      name: shivam01-webapp-pod-m
+      name: shivam01-webapp-pod-d
       namespace: kubernetes-cluster-shivam01
       labels:
-        app: WebAppMaster
+        app: WebAppDevelop
     spec:
       containers:
-      - name: shivam01-webapp-container-m
+      - name: shivam01-webapp-container-d
         image: shivamsahni/basicmath:latest
         ports:
-          - containerPort: 7200        
+          - containerPort: 7300        
   replicas: 4
   selector:
     matchLabels:
-      app: WebAppMaster
+      app: WebAppDevelop
 
 
 
