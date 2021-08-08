@@ -48,7 +48,7 @@ pipeline {
         stage('Create Docker Image'){
             steps{
                 echo "Docker Image creation step"
-                bat "docker build -t i-${userid}-develop:${BUILD_NUMBER} --no-cache ."
+                bat "docker build -t i-${userid}-develop:${BUILD_NUMBER} -t i-${userid}-develop:latest --no-cache ."
             }
         }
         stage('Containers'){
