@@ -74,8 +74,8 @@ pipeline {
                 stage("Publish Docker Image to DockerHub"){
                     steps{
                         echo "Move Image to a Docker Hub"
-                        bat "docker tag ${imageName} ${registry}:latest"                        
-                        bat "docker tag ${imageName} ${registry}:${BUILD_NUMBER}"
+                        bat "docker tag ${imageName}:latest ${registry}:latest"                        
+                        bat "docker tag ${imageName}:${BUILD_NUMBER} ${registry}:${BUILD_NUMBER}"
                         withDockerRegistry([credentialsId: 'DockerHub', url: ""]){
                             bat "docker push ${registry}:latest"
                             bat "docker push ${registry}:${BUILD_NUMBER}"
