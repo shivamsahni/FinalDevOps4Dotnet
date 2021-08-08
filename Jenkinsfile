@@ -5,7 +5,6 @@ pipeline {
         sonar = tool name: 'sonar_scanner_dotnet'
         registry = 'shivamsahni/basicmath'
         properties = null
-        docker_port = null
         username = 'shivamsahni'
         userid = 'shivam01'
         containerName = 'c-shivam01-master'
