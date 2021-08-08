@@ -123,14 +123,7 @@ pipeline {
         stage('Kubernetes Deployment'){
             steps{
                 echo "Kubernetes Deployment"
-                step([$class: 'KubernetesEngineBuilder',
-                      projectId: env.project_id,
-                      clusterName: env.cluster_name,
-                      location: env.location,
-                      manifestPattern: 'deployment.yaml',
-                      credentialsId: env.credentialsId,
-                      verifyDeployments: true
-                      ])
+                bat "kubectl apply -f deployment.yaml"
             }
         }        
     }
