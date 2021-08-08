@@ -42,7 +42,7 @@ pipeline {
         } 
          stage('Release artifact') {
           steps {
-                 bat "dotnet publish"
+                 bat "dotnet publish -c Release"
           }
         }               
         stage('Create Docker Image'){
