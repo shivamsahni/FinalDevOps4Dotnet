@@ -8,7 +8,6 @@ pipeline {
         docker_port = null
         username = 'shivamsahni'
         userid = 'shivam01'
-        containerID = null
         containerName = 'c-shivam01-master'
         imageName = 'i-shivam01-master'
         project_id = 'shivamnagp'
@@ -85,15 +84,17 @@ pipeline {
         stage('Containers'){
             parallel{
                 stage("Run PreContainer Checks"){
+                    environment{
+                        containerID = "${bat(script: 'docker ps -a -q -f name="c-shivam01-master"', returnStdout: true).trim().readLines().drop(1).join("")}"
+                    }
                     steps{
                         script{
                             echo "Run PreContainer Checks"
                             echo env.containerName
-                            env.containerID="${bat(script: 'docker ps -a -q -f name=c-shivam01-master', returnStdout: true).trim().readLines().drop(1).join(" ")}"
                             echo "containerID is "
                             echo env.containerID
                             
-                            if(env.containerID != "null"){
+                            if(env.containerID != null){
                                 echo "Stop container and remove from stopped container list too"
                                 bat "docker stop ${env.containerID} && docker rm ${env.containerID}"
                             }                         
