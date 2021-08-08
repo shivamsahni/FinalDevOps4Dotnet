@@ -66,7 +66,7 @@ pipeline {
             steps{
                 echo "Docker Image creation step"
                 bat "dotnet publish -c Release"
-                bat "docker build -t i-${userid}-master:${BUILD_NUMBER} --no-cache ."
+                bat "docker build -t i-${userid}-master:${BUILD_NUMBER} -t i-${userid}-master:latest --no-cache ."
             }
         }
         stage('Containers'){
