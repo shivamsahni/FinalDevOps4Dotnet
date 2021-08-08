@@ -48,7 +48,7 @@ pipeline {
         stage('Create Docker Image'){
             steps{
                 echo "Docker Image creation step"
-                bat "docker build -t ${imageName}:${BUILD_NUMBER} --no-cache -f . ."
+                bat "docker build -t ${imageName}:${BUILD_NUMBER} --no-cache -f ."
             }
         }
         stage('Containers'){
@@ -74,11 +74,11 @@ pipeline {
                 stage("Publish Docker Image to DockerHub"){
                     steps{
                         echo "Move Image to a Docker Hub"
-                        bat "docker tag ${imageName}:latest ${registry}:latest"                        
-                        bat "docker tag ${imageName}:${BUILD_NUMBER} ${registry}:${BUILD_NUMBER}"
+                        bat "docker tag i-${userid}-develop:${BUILD_NUMBER} ${registry}:${BUILD_NUMBER}"
+                        bat "docker tag i-${userid}-develop:latest ${registry}:latest"
                         withDockerRegistry([credentialsId: 'DockerHub', url: ""]){
-                            bat "docker push ${registry}:latest"
-                            bat "docker push ${registry}:${BUILD_NUMBER}"
+                         bat "docker push ${registry}:${BUILD_NUMBER}"
+                         bat "docker push ${registry}:latest"
                         }       
                     }                    
                 }
