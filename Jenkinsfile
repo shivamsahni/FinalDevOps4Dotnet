@@ -12,7 +12,7 @@ pipeline {
         imageName = 'i-shivam01-master'
         project_id = 'shivamnagp'
         cluster_name = 'shivam01-cluster'
-        location = 'us-central1'
+        location = 'us-central1-c'
         credentialsId = 'GKE_Shivam01' 
         
     }
