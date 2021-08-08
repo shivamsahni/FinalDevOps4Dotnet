@@ -14,7 +14,7 @@ pipeline {
         cluster_name = 'shivam01-cluster'
         location = 'us-central1-c'
         credentialsId = 'GKE_Shivam01' 
-        KUBECONFIG = 'C:\Users\shivam01\.kube\config'        
+        KUBECONFIG = "C:\Users\shivam01\.kube\config"        
     }
     
     options {
