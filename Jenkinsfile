@@ -46,25 +46,15 @@ pipeline {
                     bat "${sonar}\\SonarScanner.MSBuild.exe begin /k:sonar-shivam01 /n:sonar-shivam01 /v:1.0"
                 }
             }
-        }       
-        stage('clean') {
+        }               
+        stage('build') {
             steps {
                 echo 'Clean before build'
                 bat 'dotnet clean'
-            }
-        }        
-        stage('build') {
-            steps {
                 echo 'Build Code'
                 bat 'dotnet build'
             }
         } 
-        stage('Automated Unit Testing') {
-            steps {
-                echo 'Run Unit Tests'
-                bat 'dotnet test SampleDotnetWebAppTests\\SampleDotnetWebAppTests.csproj -l:trx;LogFileName=BasicMathTestResults.xml'
-            }
-        }
         stage('SonarQube Stop') {
             steps {
                 echo 'Stop SonarQube Analysis'
@@ -125,12 +115,5 @@ pipeline {
                 bat "kubectl apply -f deployment.yaml"
             }
         }        
-    }
-    post{
-        always{
-            echo 'Test Report Generation...'
-            xunit([MSTest(deleteOutputFiles: true, failIfNotNew: true, pattern: 'BasicMathTests\\TestResults\\BasicMathTestResults.xml', skipNoTestFiles: true, stopProcessingIfError: true)])
-        }
-        
     }
 }
