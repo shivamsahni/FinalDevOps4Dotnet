@@ -48,7 +48,7 @@ pipeline {
         stage('Create Docker Image'){
             steps{
                 echo "Docker Image creation step"
-                bat "docker build -t ${imageName}:${BUILD_NUMBER} --no-cache -f ."
+                bat "docker build -t ${imageName}:${BUILD_NUMBER} --no-cache -f . ."
             }
         }
         stage('Containers'){
@@ -90,11 +90,11 @@ pipeline {
                 bat "docker run -d -p 7300:80 --name ${containerName} ${registry}:${BUILD_NUMBER}"
             }
         }
-        stage('Kubernetes Deployment'){
+        /*stage('Kubernetes Deployment'){
             steps{
                 echo "Kubernetes Deployment"
                 bat "kubectl apply -f deployment.yaml"
             }
-        }        
+        }*/        
     }
 }
