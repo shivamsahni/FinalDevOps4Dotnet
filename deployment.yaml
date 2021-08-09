@@ -1,11 +1,4 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: kubernetes-cluster-shivam01
-  
----
-
-apiVersion: v1
 kind: Service
 metadata: 
   name: nodeportservice-master
