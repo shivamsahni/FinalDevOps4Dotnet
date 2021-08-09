@@ -15,8 +15,8 @@ metadata:
 spec:
   type: NodePort 
   ports:
-    - port: 7300
-      targetPort: 7300
+    - port: 80
+      targetPort: 80
       nodePort: 30158
   selector:
       app: WebAppDevelop
@@ -42,7 +42,8 @@ spec:
       - name: shivam01-webapp-container-d
         image: shivamsahni/basicmath:latest
         ports:
-          - containerPort: 7300        
+          - containerPort: 80
+            protocol: TCP
   replicas: 4
   selector:
     matchLabels:
