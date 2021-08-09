@@ -100,7 +100,7 @@ pipeline {
         stage('Docker Deployment'){
             steps{
                 echo "Docker Deployment by using docker hub's image"
-                bat "docker run -d -p 7200:80 --name ${containerName} ${registry}:${BUILD_NUMBER}"
+                bat "docker run -d -p 7200:80 --name c-${userid}-master ${registry}:${BUILD_NUMBER}"
             }
         }
         stage('Kubernetes Deployment'){
