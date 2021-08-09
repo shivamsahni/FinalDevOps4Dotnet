@@ -7,11 +7,7 @@ pipeline {
         properties = null
         username = 'shivamsahni'
         userid = 'shivam01'
-        containerName = 'c-shivam01-master'
-        project_id = 'shivamnagp'
-        cluster_name = 'shivam01-cluster'
-        location = 'us-central1-c'
-        credentialsId = 'GKE_Shivam01'       
+        cluster_name = 'shivam01-cluster'       
     }
     
     options {
